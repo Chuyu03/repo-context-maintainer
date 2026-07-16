@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo & Context Maintainer"
+  short_description: "整理 Git 变更、提交说明、发布边界和项目上下文维护"
+  default_prompt: "Use $repo-context-maintainer to 对话完结：总结本轮改动，盘点 AGENTS.md/Skill/project memory 上下文，提议必要更新，并准备 Git scope/commit message，确认后再提交或发布。"
