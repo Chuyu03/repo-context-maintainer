@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 from pathlib import Path
 from typing import Iterable
 
@@ -81,8 +82,29 @@ def iter_paths(root: Path, max_files: int) -> Iterable[Path]:
             yield current / filename
 
 
+def git_worktree_root(root: Path) -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+            capture_output=True,
+            check=False,
+            encoding="utf-8",
+            errors="replace",
+            text=True,
+        )
+    except OSError:
+        return None
+
+    if result.returncode != 0:
+        return None
+
+    git_root = result.stdout.strip()
+    return git_root or None
+
+
 def inventory(root: Path, max_files: int) -> dict[str, object]:
     root = root.resolve()
+    git_root = git_worktree_root(root)
     agents_files: list[str] = []
     skill_files: list[str] = []
     memory_candidates: list[str] = []
@@ -112,7 +134,9 @@ def inventory(root: Path, max_files: int) -> dict[str, object]:
 
     return {
         "root": str(root),
-        "is_git_repo": (root / ".git").exists(),
+        "git_marker_present": (root / ".git").exists(),
+        "is_git_repo": git_root is not None,
+        "git_root": git_root,
         "context_dirs": sorted(context_dirs),
         "agents_files": sorted(agents_files),
         "skill_files": sorted(skill_files),
@@ -123,7 +147,9 @@ def inventory(root: Path, max_files: int) -> dict[str, object]:
 def print_markdown(data: dict[str, object]) -> None:
     print(f"# Context Inventory: {data['root']}")
     print()
-    print(f"- Git repository marker: {'yes' if data['is_git_repo'] else 'no'}")
+    print(f"- Git marker present: {'yes' if data['git_marker_present'] else 'no'}")
+    print(f"- Git worktree: {'yes' if data['is_git_repo'] else 'no'}")
+    print(f"- Git root: {data['git_root'] or 'none'}")
 
     for key, title in [
         ("context_dirs", "Context directories"),
