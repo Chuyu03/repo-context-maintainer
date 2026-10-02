@@ -1,6 +1,8 @@
 # Git and Release Workflow Reference
 
-Use this reference when choosing commit types, branch names, tag and release boundaries, or APK publication notes.
+Use this reference when choosing commit types, branch names, or tag and release
+boundaries. For optional platform-specific artifact examples, read
+`platform-examples.md` only when relevant.
 
 ## Conventional Commits Types
 
@@ -32,12 +34,11 @@ Keep branch names lowercase, concise, and hyphen-separated. Do not create or swi
 
 Do not collapse these layers in the explanation. A push does not imply a tag. A tag does not imply a GitHub Release. A release does not imply uploading artifacts unless the user explicitly asks.
 
-## APK and Release Notes
+## Release Notes and Artifacts
 
-When organizing Android APK or app release materials:
-
-- Verify the version name, version code, build variant, and artifact path when available.
-- Keep APK file names traceable with app name, version, build type, and date when the project convention allows it.
-- Release notes should separate user-visible changes, fixes, known issues, and verification performed.
-- README changes should only document stable user-facing setup, installation, or release instructions.
-- Do not upload APKs, attach artifacts, publish releases, or overwrite release notes without explicit instruction.
+- Separate user-visible changes, fixes, known issues, and verification.
+- Document only stable setup, installation, and release behavior in a README.
+- Verify an artifact's version, variant, source revision, path, and digest when
+  those facts are available and material.
+- Do not upload, replace, or delete artifacts without explicit authorization for
+  that exact public payload.
